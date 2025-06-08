@@ -1,17 +1,22 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Doctor } from './entities/doctor.entity';
 import { Specialty } from './entities/specialty.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class DoctorsService {
-  private readonly patients: Doctor[] = [];
-  private readonly specialties: Specialty[] = [];
+  constructor(
+    @Inject('DOCTOR_REPOSITORY')
+    private doctorRepository: Repository<Doctor>,
+    @Inject('SPECIALTY_REPOSITORY')
+    private specialtyRepository: Repository<Specialty>,
+  ) {}
 
-  getAllDoctors(): Doctor[] {
-    return this.patients;
+  async getAllDoctors(): Promise<Doctor[]> {
+    return this.doctorRepository.find({ relations: ['specialty'] });
   }
 
-  getAllSpecialties(): Specialty[] {
-    return this.specialties;
+  async getAllSpecialties(): Promise<Specialty[]> {
+    return this.specialtyRepository.find();
   }
 }
