@@ -12,7 +12,7 @@ export class DoctorsController {
     return this.doctorsService.getAllDoctors();
   }
 
-  @Get()
+  @Get('specialties')
   getAllSpecialties(): Specialty[] {
     return this.doctorsService.getAllSpecialties();
   }

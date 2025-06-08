@@ -7,7 +7,7 @@ export class PatientsController {
   constructor(private patientsService: PatientsService) {}
 
   @Get()
-  getAll(): Patient[] {
-    return this.patientsService.getAll();
+  async getAll(): Promise<Patient[]> {
+    return await this.patientsService.getAll();
   }
 }
