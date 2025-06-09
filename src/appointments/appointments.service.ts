@@ -13,12 +13,22 @@ export class AppointmentsService {
     return this.appointmentRepository.find();
   }
 
-  async createAvailableSlot(date: Date, doctorId: string): Promise<Appointment> {
-    const appointment = this.appointmentRepository.create({ date, doctorId, booked: false });
+  async createAvailableSlot(
+    date: Date,
+    doctorId: string,
+  ): Promise<Appointment> {
+    const appointment = this.appointmentRepository.create({
+      date,
+      doctorId,
+      booked: false,
+    });
     return this.appointmentRepository.save(appointment);
   }
 
-  async bookAppointment(id: string, patientId: string): Promise<Appointment | null> {
+  async bookAppointment(
+    id: string,
+    patientId: string,
+  ): Promise<Appointment | null> {
     const appointment = await this.appointmentRepository.findOneBy({ id });
     if (!appointment || appointment.booked) return null;
     appointment.patientId = patientId;

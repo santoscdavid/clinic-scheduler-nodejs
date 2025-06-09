@@ -8,18 +8,11 @@ export const databaseProviders = [
       const dataSource = new DataSource({
         type: 'sqlite',
         database: 'database.sqlite',
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         synchronize: true,
       });
-
-      return dataSource
-        .initialize()
-        .then(() => {
-          console.log('Data Source has been initialized!');
-        })
-        .catch((err) => {
-          console.error('Error during Data Source initialization', err);
-        });
+      await dataSource.initialize();
+      return dataSource;
     },
   },
 ];

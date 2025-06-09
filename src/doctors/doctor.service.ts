@@ -19,4 +19,14 @@ export class DoctorsService {
   async getAllSpecialties(): Promise<Specialty[]> {
     return this.specialtyRepository.find();
   }
+
+  async createDoctor(doctorData: Omit<Doctor, 'id'>): Promise<Doctor> {
+    const doctor = this.doctorRepository.create(doctorData);
+    return this.doctorRepository.save(doctor);
+  }
+
+  async createSpecialty(specialtyData: Omit<Specialty, 'id'>): Promise<Specialty> {
+    const specialty = this.specialtyRepository.create(specialtyData);
+    return this.specialtyRepository.save(specialty);
+  }
 }

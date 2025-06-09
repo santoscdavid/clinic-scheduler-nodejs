@@ -5,7 +5,7 @@ export class Appointment {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ nullable: true })
   patientId: string;
 
   @Column()

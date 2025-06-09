@@ -15,7 +15,10 @@ export class AppointmentsController {
   async createAvailableSlot(
     @Body() body: { date: string; doctorId: string },
   ): Promise<Appointment> {
-    return this.appointmentsService.createAvailableSlot(new Date(body.date), body.doctorId);
+    return this.appointmentsService.createAvailableSlot(
+      new Date(body.date),
+      body.doctorId,
+    );
   }
 
   @Post('book/:id')
@@ -23,7 +26,10 @@ export class AppointmentsController {
     @Param('id') id: string,
     @Body() body: { patientId: string },
   ): Promise<Appointment | { error: string }> {
-    const result = await this.appointmentsService.bookAppointment(id, body.patientId);
+    const result = await this.appointmentsService.bookAppointment(
+      id,
+      body.patientId,
+    );
     if (!result) return { error: 'Slot unavailable or already booked' };
     return result;
   }
