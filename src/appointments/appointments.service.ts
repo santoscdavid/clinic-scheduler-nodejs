@@ -10,7 +10,7 @@ export class AppointmentsService {
   ) {}
 
   async getAll(): Promise<Appointment[]> {
-    return this.appointmentRepository.find();
+    return this.appointmentRepository.find({ relations: ['doctor', 'patient'] });
   }
 
   async createAvailableSlot(
