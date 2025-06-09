@@ -1,36 +1,38 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { User } from './entities/user.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UsersService {
-  private users: User[] = [];
-  private idCounter = 1;
+  constructor(
+    @Inject('USER_REPOSITORY')
+    private userRepository: Repository<User>,
+  ) {}
 
-  create(userData: Omit<User, 'id'>): User {
-    const user: User = { id: (this.idCounter++).toString(), ...userData };
-    this.users.push(user);
-    return user;
+  async create(userData: Omit<User, 'id'>): Promise<User> {
+    const user = this.userRepository.create(userData);
+    return this.userRepository.save(user);
   }
 
-  findAll(): User[] {
-    return this.users;
+  async findAll(): Promise<User[]> {
+    return this.userRepository.find();
   }
 
-  findOne(id: number): User | undefined {
-    return this.users.find((user) => user.id === id.toString());
+  async findOneById(id: string): Promise<User | null> {
+    return this.userRepository.findOneBy({ id });
   }
 
-  update(id: number, updateData: Partial<Omit<User, 'id'>>): User | undefined {
-    const user = this.findOne(id);
-    if (!user) return undefined;
-    Object.assign(user, updateData);
-    return user;
+  async findByEmail(email: string): Promise<User | null> {
+    return this.userRepository.findOneBy({ email });
   }
 
-  remove(id: number): boolean {
-    const index = this.users.findIndex((user) => user.id === id.toString());
-    if (index === -1) return false;
-    this.users.splice(index, 1);
-    return true;
+  async update(id: string, updateData: Partial<Omit<User, 'id'>>): Promise<User | null> {
+    await this.userRepository.update(id, updateData);
+    return this.findOneById(id);
+  }
+
+  async remove(id: string): Promise<boolean> {
+    const result = await this.userRepository.delete(id);
+    return result.affected !== 0;
   }
 }

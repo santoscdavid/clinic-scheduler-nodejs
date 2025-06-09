@@ -1,39 +1,45 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Param,
-  Put,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Post,
+  Put,
 } from '@nestjs/common';
+import { User } from './entities/user.entity';
+import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
+  constructor(private usersService: UsersService) {}
+
   @Get()
-  findAll() {
-    return 'Lista de usuários';
+  async findAll(): Promise<User[]> {
+    return this.usersService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return `Usuário com id ${id}`;
+  async findOne(@Param('id') id: string): Promise<User | null> {
+    return this.usersService.findOneById(id);
   }
 
   @Post()
-  create(@Body() createUserDto: any) {
-    return 'Usuário criado';
+  async create(@Body() createUserDto: Omit<User, 'id'>): Promise<User> {
+    return this.usersService.create(createUserDto);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: any) {
-    // Atualiza um usuário existente
-    return `Usuário com id ${id} atualizado`;
+  async update(
+    @Param('id') id: string,
+    @Body() updateUserDto: Partial<Omit<User, 'id'>>,
+  ): Promise<User | null> {
+    return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    // Remove um usuário
-    return `Usuário com id ${id} removido`;
+  async remove(@Param('id') id: string): Promise<{ success: boolean }> {
+    const success = await this.usersService.remove(id);
+    return { success };
   }
 }
